@@ -1,0 +1,32 @@
+const express = require("express");
+const { connectToDb, db } = require("./db");
+const { orders } = require("./routes/orders.js");
+const { inventories } = require("./routes/inventories.js");
+const { users } = require("./routes/users.js");
+const { login } = require("./routes/login.js");
+const { description } = require("./routes/description.js");
+
+const app = express();
+
+async function main() {
+  try {
+    await connectToDb();
+    console.log("Connected to mongodb successfully");
+
+    app.use(express.json());
+    app.use(express.urlencoded({ extended: true }));
+    app.use(express.static("public"));
+
+    app.use("/api/v1/orders", orders);
+    app.use("/api/v1/inventories", inventories);
+    app.use("/api/v1/users", users);
+    app.use("/api/v1/login", login);
+    app.use("/api/v1/description", description);
+
+    app.listen(3000, () => {
+      console.log("App is running at 3000");
+    });
+  } catch (error) {}
+}
+
+main();
